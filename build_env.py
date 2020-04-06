@@ -38,14 +38,20 @@ parser.add_argument ( "--env",
                      help= ' building the image based on python or c++ '
 )
 args = parser.parse_args()
-print (args)
+print (args.os)
+print (type(args))
 
-print ("This code builds a docker image from docker with:") 
-print ("{OS: ['fedora or ubuntu' default: [fedora]}") 
-print ("{build type: ['debug or release' default: [debug]}")
-print ("{install: ['debug or release]' default: [debug]}")
-print ("{user: ['ste||ar or karame'] default: [ste||ar]}")
-print ("{env : ['python or c++'] no default}")
+
+message = f""" This builds a docker image from docker with 
+OS: {args.os}
+build_type: {args.build} 
+install: {args.install}
+user: {args.user}
+env: {args.env}
+"""
+print (message)
+
+
 
 #docker_client = docker.from_env()
 
