@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+
 import argparse
 import docker
 import os
@@ -46,5 +46,19 @@ RUN dnf install -y python3
 RUN dnf install -y numpy 
 RUN useradd -r -m -g {args.user} -G wheel {args.user}
 """
+# write the message in a file called Dockerfile
+with open("Dockerfile", 'w') as file:
+     for line in message:
+         file.write(line)
+
+# build the dockerfile above
+
+docker_client = docker.from_env()
+
+#image_tag = "build"
+#image_name = "{image_name}:{tag}".format(image_name='dockerfile.python', tag=image_tag)
+image_name = "dockerfile.python:build"
+docker_client.images.build(path='/home/karame/repos/python-repo/', tag=image_name)
+
 
 print(message)
