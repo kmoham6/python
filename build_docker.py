@@ -1,4 +1,4 @@
-
+#!/usr/bin/python3
 import argparse
 import docker
 import os
@@ -27,9 +27,9 @@ parser.add_argument('-i', "--install",
 
 # add user
 parser.add_argument('-u', "--user",
-                    choices=['ste||ar', 'karame'],
-                    default='ste||ar',
-                    help='adding user to the image build (default: ste||ar)'
+                    choices=['stellar', 'karame'],
+                    default='stellar',
+                    help='adding user to the image build (default: stellar)'
                     )
 
 # set the env
@@ -38,27 +38,32 @@ parser.add_argument("--env",
                     help=' building the image based on python or c++ '
                     )
 args = parser.parse_args()
-
+package_manager = "dnf" if args.os == "fedora" else "apt"
 message = f"""
 From {args.os} 
-RUN sudo dnf update
-RUN dnf install -y python3 
-RUN dnf install -y numpy 
+RUN dnf -y update 
+RUN dnf install -y python3
+RUn dnf install -y numpy
+RUN groupadd -r {args.user}
 RUN useradd -r -m -g {args.user} -G wheel {args.user}
+RUN echo '%wheel ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers 
 """
+
+
 # write the message in a file called Dockerfile
 with open("Dockerfile", 'w') as file:
-     for line in message:
-         file.write(line)
+    for line in message:
+        file.write(line)
 
 # build the dockerfile above
 
 docker_client = docker.from_env()
 
-#image_tag = "build"
-#image_name = "{image_name}:{tag}".format(image_name='dockerfile.python', tag=image_tag)
-image_name = "dockerfile.python:build"
-docker_client.images.build(path='/home/karame/repos/python-repo/', tag=image_name)
+image_tag = "build"
+image_name = "{image_name}:{tag}".format(
+    image_name='dockerfile.python', tag=image_tag)
+#image_name = "dockerfile.python:build"
+a = docker_client.images.build(
+    path='/home/karame/repos/python-repo/', tag=image_name)
 
-
-print(message)
+print(a)
