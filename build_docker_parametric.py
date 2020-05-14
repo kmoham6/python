@@ -41,30 +41,34 @@ args = parser.parse_args()
 package_manager = "dnf" if args.os == "fedora" else "apt"
 
 fedora_dep = ["python", "sudo", "git",
-              "boost-devel", "wget curl", "environmet-modules", "findutils", "cmake", "gdb", "gcc-c++", "openmpi",
-              "numpy", "Development Tools", "C Development Tools and Library", "bzip2-devel", "fontconfig-devel", 
+              "boost-devel", "wget curl", "environment-modules", "findutils", "cmake", "gdb", "gcc-c++", "openmpi",
+              "numpy", "bzip2-devel", "fontconfig-devel",
               "freetype-devel", "fribidi-devel", "harfbuzz-devel", "jansson-devel", "lame-devel", "lbzip2", "libass-devel",
-              "libogg-devel", "libsamplerate-devel", "libtheora-devel", "libtool", "libvorbis-devel", "libxml2-devel", 
-              "libvpx-devel", "m4", "make", "meson", "nasm", "ninja-build", "numactl-devel", "opus-devel", "patch", 
+              "libogg-devel", "libsamplerate-devel", "libtheora-devel", "libtool", "libvorbis-devel", "libxml2-devel",
+              "libvpx-devel", "m4", "make", "meson", "nasm", "ninja-build", "numactl-devel", "opus-devel", "patch",
               "speex-devel", "tar", "xz-devel", "zlib-devel"]
-              
+
 ubuntu_dep = ["autoconf", "automake", "sudo"
               "build-essential", "autopoint", "cmake", "git", "libass-dev", "libbz2-dev", "libfontconfig1-dev",
               "libfreetype6-dev", "libfribidi", "libharfbuzz-dev", "libjansson-dev", "liblzma-dev", "libmp3lame-dev",
-              "libnuma-dev", "libogg-dev", "libopus-dev", "libsamplerate-dev", "libspeex-dev", "libtheora-dev", 
-              "libtool", "libtool-bin", "libvorbis-dev", "libx264-dev", "libxml2-dev", "libvpx-dev", "m4", "make", 
+              "libnuma-dev", "libogg-dev", "libopus-dev", "libsamplerate-dev", "libspeex-dev", "libtheora-dev",
+              "libtool", "libtool-bin", "libvorbis-dev", "libx264-dev", "libxml2-dev", "libvpx-dev", "m4", "make",
               "nasm", "ninja-build", "patch", "pkg-config", "python", "tar", "zlib1g-dev", "meson", "python3-pip"]
 message = f"""
-From {args.os}
+From {args.os} 
 RUN {package_manager} -y update
 RUN groupadd -r {args.user}
 RUN useradd -r -m -g {args.user} -G wheel {args.user}
 RUN echo '%wheel ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 """
 
+if (args.os == 'ubuntu'):
+    for i in ubuntu_dep:
+        message += f"RUN {package_manager} install -y {i}\n"
+else:
 
-for i in fedora_dep:
-    message += f"RUN {package_manager} install -y {i}\n"
+    for i in fedora_dep:
+        message += f"RUN {package_manager} install -y {i}\n"
 print(message)
 # write the message in a file called Dockerfile
 with open("Dockerfile", 'w') as file:
