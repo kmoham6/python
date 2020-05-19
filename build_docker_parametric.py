@@ -37,6 +37,12 @@ parser.add_argument("--env",
                     choices=['python', 'c++'],
                     help=' building the image based on python or c++ '
                     )
+
+# set the build path
+parser.add_argument('-p', "--path",
+                    default='/home/stellar/git',
+                    help='source directory'
+                    )
 args = parser.parse_args()
 package_manager = "dnf" if args.os == "fedora" else "apt"
 
@@ -46,21 +52,22 @@ fedora_dep = ["python", "sudo", "git",
               "freetype-devel", "fribidi-devel", "harfbuzz-devel", "jansson-devel", "lame-devel", "lbzip2", "libass-devel",
               "libogg-devel", "libsamplerate-devel", "libtheora-devel", "libtool", "libvorbis-devel", "libxml2-devel",
               "libvpx-devel", "m4", "make", "meson", "nasm", "ninja-build", "numactl-devel", "opus-devel", "patch",
-              "speex-devel", "tar", "xz-devel", "zlib-devel"]
+              "speex-devel", "tar", "xz-devel", "zlib-devel", "hwloc", "hwloc-devel"]
 
 ubuntu_dep = ["autoconf", "automake", "sudo"
               "build-essential", "autopoint", "cmake", "git", "libass-dev", "libbz2-dev", "libfontconfig1-dev",
               "libfreetype6-dev", "libfribidi", "libharfbuzz-dev", "libjansson-dev", "liblzma-dev", "libmp3lame-dev",
               "libnuma-dev", "libogg-dev", "libopus-dev", "libsamplerate-dev", "libspeex-dev", "libtheora-dev",
               "libtool", "libtool-bin", "libvorbis-dev", "libx264-dev", "libxml2-dev", "libvpx-dev", "m4", "make",
-              "nasm", "ninja-build", "patch", "pkg-config", "python", "tar", "zlib1g-dev", "meson", "python3-pip"]
+              "nasm", "ninja-build", "patch", "pkg-config", "python", "tar", "zlib1g-dev", "meson", "python3-pip", "hwloc", "hwloc-dev"]
 message = f"""
-From {args.os} 
+From {args.os}
 RUN {package_manager} -y update
 RUN groupadd -r {args.user}
 RUN useradd -r -m -g {args.user} -G wheel {args.user}
 RUN echo '%wheel ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 """
+
 
 if (args.os == 'ubuntu'):
     for i in ubuntu_dep:
@@ -70,6 +77,22 @@ else:
     for i in fedora_dep:
         message += f"RUN {package_manager} install -y {i}\n"
 print(message)
+
+# install hpx
+message += f"""
+WORKDIR {args.path}
+RUN git clone https://github.com/STEllAR-GROUP/hpx.git
+WORKDIR {args.path}/hpx/build
+RUN cmake \
+    -DCMAKE_BUILD_TYPE={args.build}      \
+    -DHPX_WITH_MALLOC=system             \
+    -DHPX_WITH_MORE_THAN_64_THREADS=ON   \
+    -DHPX_WITH_MAX_CPU_COUNT=80          \
+    -DHPX_WITH_EXAMPLES=OFF              \
+    {args.path}/hpx
+RUN make -j install
+"""
+
 # write the message in a file called Dockerfile
 with open("Dockerfile", 'w') as file:
     for line in message:
