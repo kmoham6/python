@@ -51,4 +51,4 @@ WORKDIR /home/stellar/git
 RUN git clone https://github.com/STEllAR-GROUP/hpx.git
 WORKDIR /home/stellar/git/hpx/build
 RUN cmake     -DCMAKE_BUILD_TYPE=debug          -DHPX_WITH_MALLOC=system                 -DHPX_WITH_MORE_THAN_64_THREADS=ON       -DHPX_WITH_MAX_CPU_COUNT=80              -DHPX_WITH_EXAMPLES=OFF                  /home/stellar/git/hpx
-RUN make -j 48 install
+RUN make -j install
