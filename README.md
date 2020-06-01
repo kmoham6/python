@@ -14,14 +14,25 @@ To start, some variable are passed as an argument. The arguments used are:
 
 ### Applications 
 
-In this project, some application can be built. Users can choose based on their needs. 
+In this project, some application can be built. Users can choose them based on their needs. 
 These applications are : **HPX**, **Blaze**, **Blaze Tensor**, **Phylanx**  
 
 
 ### How to use: 
+Users can install the applications and choose the arguments based on their OS. 
 
+Some examples : 
 
+*To run ubuntu with the user name project:*
 
+```sh
+./build_docekr_parametric.py --os fedora --user project
+```
+*For more information*
+
+```sh
+./build_docekr_parametric.py --help 
+```
 
 ### Example:
 Here there is a an example of the dockerfile I built with the hpx installed. This shows the dockerfile connected and the hpx example project. 
