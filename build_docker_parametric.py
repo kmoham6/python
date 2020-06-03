@@ -27,7 +27,6 @@ parser.add_argument('-i', "--install",
 
 # add user
 parser.add_argument('-u', "--user",
-                    choices=['stellar', 'karame'],
                     default='stellar',
                     help='adding user to the image build (default: stellar)'
                     )
@@ -46,20 +45,21 @@ parser.add_argument('-p', "--path",
 args = parser.parse_args()
 package_manager = "dnf" if args.os == "fedora" else "apt"
 
-fedora_dep = ["python", "sudo", "git",
+fedora_dep = ["python3-pip", "sudo", "git",
               "boost-devel", "wget curl", "environment-modules", "findutils", "cmake", "gdb", "gcc-c++", "openmpi",
               "numpy", "bzip2-devel", "fontconfig-devel",
               "freetype-devel", "fribidi-devel", "harfbuzz-devel", "jansson-devel", "lame-devel", "lbzip2", "libass-devel",
               "libogg-devel", "libsamplerate-devel", "libtheora-devel", "libtool", "libvorbis-devel", "libxml2-devel",
               "libvpx-devel", "m4", "make", "meson", "nasm", "ninja-build", "numactl-devel", "opus-devel", "patch",
-              "speex-devel", "tar", "xz-devel", "zlib-devel", "hwloc", "hwloc-devel"]
+              "speex-devel", "tar", "xz-devel", "zlib-devel", "hwloc", "hwloc-devel", "blas", "blas-devel", "lapack-devel", "pytest"]
 
 ubuntu_dep = ["autoconf", "automake", "sudo"
               "build-essential", "autopoint", "cmake", "git", "libass-dev", "libbz2-dev", "libfontconfig1-dev",
               "libfreetype6-dev", "libfribidi", "libharfbuzz-dev", "libjansson-dev", "liblzma-dev", "libmp3lame-dev",
               "libnuma-dev", "libogg-dev", "libopus-dev", "libsamplerate-dev", "libspeex-dev", "libtheora-dev",
               "libtool", "libtool-bin", "libvorbis-dev", "libx264-dev", "libxml2-dev", "libvpx-dev", "m4", "make",
-              "nasm", "ninja-build", "patch", "pkg-config", "python", "tar", "zlib1g-dev", "meson", "python3-pip", "hwloc", "hwloc-dev"]
+              "nasm", "ninja-build", "patch", "pkg-config", "python", "tar", "zlib1g-dev", "meson", "python3-pip", 
+              "hwloc", "hwloc-dev", "blas", "blas-dev", "lapack-dev", "pytest"]
 message = f"""
 From {args.os}
 RUN {package_manager} -y update
@@ -92,6 +92,51 @@ RUN cmake \
     {args.path}/hpx
 RUN make -j install
 """
+
+#install pybind11
+message +=f"""
+WORKDIR {args.path}
+RUN git clone https://github.com/pybind/pybind11.git
+WORKDIR {args.path}/pybind11/build
+RUN cmake \
+        -DCMAKE_BUILD_TYPE={args.build}  \
+        {args.path}/pybind11
+RUN make -j install
+"""
+
+#install blaze 
+message +=f"""
+WORKDIR {args.path}
+RUN git clone https://bitbucket.org/blaze-lib/blaze.git
+WORKDIR {args.path}/blaze/build
+RUN cmake \
+    -DCMAKE_BUILD_TYPE={args.build}      \
+    {args.path}/blaze   
+RUN make -j install 
+"""
+
+#install blaze-tensor
+message +=f"""
+WORKDIR {args.path}
+RUN git clone https://github.com/STEllAR-GROUP/blaze_tensor.git
+WORKDIR {args.path}/blaze_tensor/build
+RUN cmake \
+     -DCMAKE_BUILD_TYPE={args.build}  \
+     {args.path}/blaze_tensor
+RUN make -j install 
+"""
+
+# install Phylanx
+# message +=f"""
+# WORKDIR {args.path}
+# RUN git clone https://github.com/STEllAR-GROUP/phylanx.git
+# WORKDIR {args.path}/phylanx/build
+
+# COPY Dockerfile /Dockerfile
+# COPY build.sh /usr/local/bin/build_phylanx.sh
+# RUN chmod +x /usr/local/bin/build_phylanx.sh
+# RUN 
+# """
 
 # write the message in a file called Dockerfile
 with open("Dockerfile", 'w') as file:
