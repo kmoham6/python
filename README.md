@@ -35,7 +35,7 @@ Some examples :
 ./build_docekr_parametric.py --help 
 ```
 
-*To run Fedora with hpx 
+*To run Fedora with hpx*
 
 ```sh
 ./build_docker_parametric.py --os fedora --app hpx
