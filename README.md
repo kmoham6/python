@@ -11,6 +11,7 @@ To start, some variable are passed as an argument. The arguments used are:
 * **Adding User** : User name can be added to the image. The default name is *Stellar*. 
 * **Build Environmnet** : User can choose the environment among *C++* or *python*. Based on selected environment, the image will be built. 
 * **Build Path** : source directory is another argument. A default path has been passed as an argument. 
+* **Application** : Different applications like *hpx*, *blaze*, *blaze-tensor*, *blazemark*, *Pybind11*, *Phylax* based on users' choice woulb be instlled. 
 
 ### Applications 
 
@@ -23,16 +24,21 @@ Users can install the applications and choose the arguments based on their OS.
 
 Some examples : 
 
-*To run ubuntu with the user name project:*
+*To run ubuntu with the username given group1:*
 
 ```sh
-./build_docekr_parametric.py --os fedora --user project
+./build_docekr_parametric.py --os fedora --user group1
 ```
 *For more information*
 
 ```sh
 ./build_docekr_parametric.py --help 
 ```
+
+*To run Fedora with hpx 
+
+```sh
+./build_docker_parametric.py --os fedora --app hpx
 
 ### Example:
 Here there is a an example of the dockerfile I built with the hpx installed. This shows the dockerfile connected and the hpx example project. 
