@@ -44,3 +44,7 @@ Some examples :
 ### Example: 
 
 Here there is a an example of the dockerfile I built with the hpx installed. This shows the dockerfile connected and the hpx example project. 
+
+
+![Screenshot from 2020-05-22 00-27-20](https://user-images.githubusercontent.com/47753533/84228946-f8e45880-aaad-11ea-8ce7-def6aee0bb7e.png)
+
