@@ -18,6 +18,7 @@ RUN dnf install -y openmpi
 RUN dnf install -y numpy
 RUN dnf install -y bzip2-devel
 RUN dnf install -y fontconfig-devel
+RUN dnf install -y python3
 RUN dnf install -y freetype-devel
 RUN dnf install -y fribidi-devel
 RUN dnf install -y harfbuzz-devel
@@ -50,27 +51,10 @@ RUN dnf install -y blas
 RUN dnf install -y blas-devel
 RUN dnf install -y lapack-devel
 RUN dnf install -y pytest
+RUN dnf install -y python3-devel
 
 WORKDIR /home/stellar/git
 RUN git clone https://github.com/STEllAR-GROUP/hpx.git
 WORKDIR /home/stellar/git/hpx/build
 RUN cmake     -DCMAKE_BUILD_TYPE=debug          -DHPX_WITH_MALLOC=system                 -DHPX_WITH_MORE_THAN_64_THREADS=ON       -DHPX_WITH_MAX_CPU_COUNT=80              -DHPX_WITH_EXAMPLES=OFF                  /home/stellar/git/hpx
 RUN make -j install
-
-WORKDIR /home/stellar/git
-RUN git clone https://github.com/pybind/pybind11.git
-WORKDIR /home/stellar/git/pybind11/build
-RUN cmake         -DCMAKE_BUILD_TYPE=debug          /home/stellar/git/pybind11
-RUN make -j install
-
-WORKDIR /home/stellar/git
-RUN git clone https://bitbucket.org/blaze-lib/blaze.git
-WORKDIR /home/stellar/git/blaze/build
-RUN cmake     -DCMAKE_BUILD_TYPE=debug          /home/stellar/git/blaze   
-RUN make -j install 
-
-WORKDIR /home/stellar/git
-RUN git clone https://github.com/STEllAR-GROUP/blaze_tensor.git
-WORKDIR /home/stellar/git/blaze_tensor/build
-RUN cmake      -DCMAKE_BUILD_TYPE=debug       /home/stellar/git/blaze_tensor
-RUN make -j install 
