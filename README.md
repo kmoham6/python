@@ -39,6 +39,8 @@ Some examples :
 
 ```sh
 ./build_docker_parametric.py --os fedora --app hpx
+```
 
-### Example:
+### Example: 
+
 Here there is a an example of the dockerfile I built with the hpx installed. This shows the dockerfile connected and the hpx example project. 
