@@ -44,7 +44,8 @@ parser.add_argument('-p', "--path",
                     )
 # Choose the application
 parser.add_argument('-app', "--app",
-                    choices=['hpx', 'pybind11', 'blaze', 'blaze-tensor', 'blazemark'],
+                    choices=['hpx', 'pybind11', 'blaze',
+                             'blaze-tensor', 'blazemark'],
                     help=' Installing the applications.'
                     )
 args = parser.parse_args()
@@ -56,7 +57,8 @@ fedora_dep = ["python3-pip", "sudo", "git",
               "freetype-devel", "fribidi-devel", "harfbuzz-devel", "jansson-devel", "lame-devel", "lbzip2", "libass-devel",
               "libogg-devel", "libsamplerate-devel", "libtheora-devel", "libtool", "libvorbis-devel", "libxml2-devel",
               "libvpx-devel", "m4", "make", "meson", "nasm", "ninja-build", "numactl-devel", "opus-devel", "patch",
-              "speex-devel", "tar", "xz-devel", "zlib-devel", "hwloc", "hwloc-devel", "blas", "blas-devel", "lapack-devel", "pytest", "python3-devel"]
+              "speex-devel", "tar", "xz-devel", "zlib-devel", "hwloc", "hwloc-devel", "blas", "blas-devel",
+              "lapack-devel", "pytest", "python3-devel"]
 
 ubuntu_dep = ["autoconf", "automake", "sudo"
               "build-essential", "autopoint", "cmake", "git", "libass-dev", "libbz2-dev", "libfontconfig1-dev",
@@ -94,9 +96,14 @@ RUN cmake \
     -DHPX_WITH_MALLOC=system             \
     -DHPX_WITH_MORE_THAN_64_THREADS=ON   \
     -DHPX_WITH_MAX_CPU_COUNT=80          \
-    -DHPX_WITH_EXAMPLES=OFF              \
+    -DHPX_WITH_EXAMPLES=ON              \
+    -DHPX_WITH_TESTS=ON                                                 \
+    -DHPX_WITH_TESTS_BENCHMARKS=ON                             \
+    -DHPX_WITH_TESTS_REGRESSIONS=ON \
+    -DHPX_WITH_TESTS_UNIT=ON                                    \
     {args.path}/hpx
 RUN make -j install
+RUN make examples
 """
 
 # install pybind11
@@ -111,7 +118,7 @@ RUN cmake \
 RUN make -j install
 """
 
-# install blaze and blazemark 
+# install blaze and blazemark
 if (args.app == 'blaze' or args.app == 'blaze-tensor' or args.app == 'blazemark'):
     message += f"""
 WORKDIR {args.path}
