@@ -14,14 +14,14 @@ distro.add_argument('-os', "--os",
 
 # set the build type
 parser.add_argument('-b', "--build",
-                    choices=['debug', 'release'],
-                    default='debug',
-                    help='builds in "debug" or "release" mode (default: debug)'
+                    choices=['Debug', 'release'],
+                    default='Debug',
+                    help='builds in "Debug" or "release" mode (default: Debug)'
                     )
 parser.add_argument('-i', "--install",
-                    choices=['debug', 'release'],
-                    default='debug',
-                    help="builds in 'debug' or 'release' mode (default: debug)"
+                    choices=['Debug', 'release'],
+                    default='Debug',
+                    help="builds in 'Debug' or 'release' mode (default: Debug)"
 
                     )
 
@@ -60,7 +60,7 @@ fedora_dep = ["python3-pip", "sudo", "git",
               "speex-devel", "tar", "xz-devel", "zlib-devel", "hwloc", "hwloc-devel", "blas", "blas-devel",
               "lapack-devel", "pytest", "python3-devel"]
 
-ubuntu_dep = ["autoconf", "automake", "sudo"
+ubuntu_dep = ["autoconf", "automake", "sudo",
               "build-essential", "autopoint", "cmake", "git", "libass-dev", "libbz2-dev", "libfontconfig1-dev",
               "libfreetype6-dev", "libfribidi", "libharfbuzz-dev", "libjansson-dev", "liblzma-dev", "libmp3lame-dev",
               "libnuma-dev", "libogg-dev", "libopus-dev", "libsamplerate-dev", "libspeex-dev", "libtheora-dev",
@@ -102,8 +102,9 @@ RUN cmake \
     -DHPX_WITH_TESTS_REGRESSIONS=ON \
     -DHPX_WITH_TESTS_UNIT=ON                                    \
     {args.path}/hpx
-RUN make -j install
-RUN make examples
+RUN make -j$(nproc)
+RUN chown -R stellar:stellar /home/stellar
+USER stellar
 """
 
 # install pybind11
