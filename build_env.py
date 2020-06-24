@@ -6,41 +6,41 @@ import os
 parser = argparse.ArgumentParser(description='build an environment.')
 # set the linux dirtributions
 distro = parser.add_mutually_exclusive_group()
-distro.add_argument('-os', "--os",
-                    choices=['ubuntu', 'fedora'],
-                    default='fedora',
-                    help='builds the image based on selected OS (default: frdora)'
-                    )
+distro.add_argument(
+    '-os',
+    "--os",
+    choices=['ubuntu', 'fedora'],
+    default='fedora',
+    help='builds the image based on selected OS (default: fedora)')
 
 # set the build type
-parser.add_argument('-b', "--build",
-                    choices=['debug', 'release'],
-                    default='debug',
-                    help='builds in "debug" or "release" mode (default: debug)'
-                    )
-parser.add_argument('-i', "--install",
-                    choices=['debug', 'release'],
-                    default='debug',
-                    help="builds in 'debug' or 'release' mode (default: debug)"
-
-                    )
+parser.add_argument(
+    '-b',
+    "--build",
+    choices=['debug', 'release'],
+    default='debug',
+    help='builds in "debug" or "release" mode (default: debug)')
+parser.add_argument(
+    '-i',
+    "--install",
+    choices=['debug', 'release'],
+    default='debug',
+    help="builds in 'debug' or 'release' mode (default: debug)")
 
 # add user
-parser.add_argument('-u', "--user",
+parser.add_argument('-u',
+                    "--user",
                     choices=['ste||ar', 'karame'],
                     default='ste||ar',
-                    help='adding user to the image build (default: ste||ar)'
-                    )
+                    help='adding user to the image build (default: ste||ar)')
 
 # set the env
 parser.add_argument("--env",
                     choices=['python', 'c++'],
-                    help=' building the image based on python or c++ '
-                    )
+                    help=' building the image based on python or c++ ')
 args = parser.parse_args()
 print(args.os)
 print(type(args))
-
 
 message = f""" This builds a docker image from docker with 
 OS: {args.os}
@@ -50,7 +50,6 @@ user: {args.user}
 env: {args.env}
 """
 print(message)
-
 
 #docker_client = docker.from_env()
 

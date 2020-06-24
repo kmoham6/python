@@ -6,67 +6,76 @@ import os
 parser = argparse.ArgumentParser(description='build an environment.')
 # set the linux dirtributions
 distro = parser.add_mutually_exclusive_group()
-distro.add_argument('-os', "--os",
-                    choices=['ubuntu', 'fedora'],
-                    default='fedora',
-                    help='builds the image based on selected OS (default: frdora)'
-                    )
+distro.add_argument(
+    '-os',
+    "--os",
+    choices=['ubuntu', 'fedora'],
+    default='fedora',
+    help='builds the image based on selected OS (default: fedora)')
 
 # set the build type
-parser.add_argument('-b', "--build",
-                    choices=['Debug', 'release'],
-                    default='Debug',
-                    help='builds in "Debug" or "release" mode (default: Debug)'
-                    )
-parser.add_argument('-i', "--install",
-                    choices=['Debug', 'release'],
-                    default='Debug',
-                    help="builds in 'Debug' or 'release' mode (default: Debug)"
-
-                    )
+parser.add_argument(
+    '-b',
+    "--build",
+    choices=['Debug', 'release'],
+    default='Debug',
+    help='builds in "Debug" or "release" mode (default: Debug)')
+parser.add_argument(
+    '-i',
+    "--install",
+    choices=['Debug', 'release'],
+    default='Debug',
+    help="builds in 'Debug' or 'release' mode (default: Debug)")
 
 # add user
-parser.add_argument('-u', "--user",
+parser.add_argument('-u',
+                    "--user",
                     default='stellar',
-                    help='adding user to the image build (default: stellar)'
-                    )
+                    help='adding user to the image build (default: stellar)')
 
 # set the env
 parser.add_argument("--env",
                     choices=['python', 'c++'],
-                    help=' building the image based on python or c++ '
-                    )
+                    help=' building the image based on python or c++ ')
 
 # set the build path
-parser.add_argument('-p', "--path",
+parser.add_argument('-p',
+                    "--path",
                     default='/home/stellar/git',
-                    help='source directory'
-                    )
+                    help='source directory')
 # Choose the application
-parser.add_argument('-app', "--app",
-                    choices=['hpx', 'pybind11', 'blaze',
-                             'blaze-tensor', 'blazemark'],
-                    help=' Installing the applications.'
-                    )
+parser.add_argument(
+    '-app',
+    "--app",
+    choices=['hpx', 'pybind11', 'blaze', 'blaze-tensor', 'blazemark'],
+    help=' Installing the applications.')
 args = parser.parse_args()
 package_manager = "dnf" if args.os == "fedora" else "apt"
 
-fedora_dep = ["python3-pip", "sudo", "git",
-              "boost-devel", "wget curl", "environment-modules", "findutils", "cmake", "gdb", "gcc-c++", "openmpi",
-              "numpy", "bzip2-devel", "fontconfig-devel", "python3",
-              "freetype-devel", "fribidi-devel", "harfbuzz-devel", "jansson-devel", "lame-devel", "lbzip2", "libass-devel",
-              "libogg-devel", "libsamplerate-devel", "libtheora-devel", "libtool", "libvorbis-devel", "libxml2-devel",
-              "libvpx-devel", "m4", "make", "meson", "nasm", "ninja-build", "numactl-devel", "opus-devel", "patch",
-              "speex-devel", "tar", "xz-devel", "zlib-devel", "hwloc", "hwloc-devel", "blas", "blas-devel",
-              "lapack-devel", "pytest", "python3-devel"]
+fedora_dep = [
+    "python3-pip", "sudo", "git", "boost-devel", "wget curl",
+    "environment-modules", "findutils", "cmake", "gdb", "gcc-c++", "openmpi",
+    "numpy", "bzip2-devel", "fontconfig-devel", "python3", "freetype-devel",
+    "fribidi-devel", "harfbuzz-devel", "jansson-devel", "lame-devel", "lbzip2",
+    "libass-devel", "libogg-devel", "libsamplerate-devel", "libtheora-devel",
+    "libtool", "libvorbis-devel", "libxml2-devel", "libvpx-devel", "m4",
+    "make", "meson", "nasm", "ninja-build", "numactl-devel", "opus-devel",
+    "patch", "speex-devel", "tar", "xz-devel", "zlib-devel", "hwloc",
+    "hwloc-devel", "blas", "blas-devel", "lapack-devel", "pytest",
+    "python3-devel"
+]
 
-ubuntu_dep = ["autoconf", "automake", "sudo",
-              "build-essential", "autopoint", "cmake", "git", "libass-dev", "libbz2-dev", "libfontconfig1-dev",
-              "libfreetype6-dev", "libfribidi", "libharfbuzz-dev", "libjansson-dev", "liblzma-dev", "libmp3lame-dev",
-              "libnuma-dev", "libogg-dev", "libopus-dev", "libsamplerate-dev", "libspeex-dev", "libtheora-dev",
-              "libtool", "libtool-bin", "libvorbis-dev", "libx264-dev", "libxml2-dev", "libvpx-dev", "m4", "make",
-              "nasm", "ninja-build", "patch", "pkg-config", "python3", "tar", "zlib1g-dev", "meson", "python3-pip",
-              "hwloc", "hwloc-dev", "blas", "blas-dev", "lapack-dev", "pytest", "python3-dev"]
+ubuntu_dep = [
+    "autoconf", "automake", "sudo", "build-essential", "autopoint", "cmake",
+    "git", "libass-dev", "libbz2-dev", "libfontconfig1-dev",
+    "libfreetype6-dev", "libfribidi", "libharfbuzz-dev", "libjansson-dev",
+    "liblzma-dev", "libmp3lame-dev", "libnuma-dev", "libogg-dev",
+    "libopus-dev", "libsamplerate-dev", "libspeex-dev", "libtheora-dev",
+    "libtool", "libtool-bin", "libvorbis-dev", "libx264-dev", "libxml2-dev",
+    "libvpx-dev", "m4", "make", "nasm", "ninja-build", "patch", "pkg-config",
+    "python3", "tar", "zlib1g-dev", "meson", "python3-pip", "hwloc",
+    "hwloc-dev", "blas", "blas-dev", "lapack-dev", "pytest", "python3-dev"
+]
 message = f"""
 From {args.os}
 RUN {package_manager} -y update
@@ -74,7 +83,6 @@ RUN groupadd -r {args.user}
 RUN useradd -r -m -g {args.user} -G wheel {args.user}
 RUN echo '%wheel ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 """
-
 
 if (args.os == 'ubuntu'):
     for i in ubuntu_dep:
@@ -120,7 +128,8 @@ RUN make -j install
 """
 
 # install blaze and blazemark
-if (args.app == 'blaze' or args.app == 'blaze-tensor' or args.app == 'blazemark'):
+if (args.app == 'blaze' or args.app == 'blaze-tensor'
+        or args.app == 'blazemark'):
     message += f"""
 WORKDIR {args.path}
 RUN git clone https://bitbucket.org/blaze-lib/blaze.git
@@ -165,11 +174,10 @@ with open("Dockerfile", 'w') as file:
 docker_client = docker.from_env()
 
 image_tag = "build"
-image_name = "{image_name}:{tag}".format(
-    image_name='dockerfile.python', tag=image_tag)
+image_name = "{image_name}:{tag}".format(image_name='dockerfile.python',
+                                         tag=image_tag)
 # #image_name = "dockerfile.python:build"
-a = docker_client.images.build(
-    path='/home/karame/repos/python-repo/', tag=image_name)
-
+a = docker_client.images.build(path='/home/karame/repos/python-repo/',
+                               tag=image_name)
 
 print(a)
